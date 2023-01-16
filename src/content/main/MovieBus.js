@@ -4,9 +4,15 @@ import SwiperCore, { Navigation, Pagination } from "swiper";
 import "swiper/css"; //basic
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import "./css/style.css"
+import "./css/reset.css"
+import axios from "axios";
+import React from "react";
 
 
 function MovieBus() {
+
+    const [movies, setMovies] = React.useState([]);
 
     var mouseOver = (e) => {
         var $target = $(e.target); // $(event.target);
@@ -26,6 +32,14 @@ function MovieBus() {
         $target.next("p").hide();
     }
 
+    axios.get("http://localhost:8080/movieHam/api/movie/search/actorNm?keywords=%EA%B9%80")
+        .then((result) => {
+            setMovies(result.data.resultList);
+        })
+        .catch(() => {
+            console.log("error")
+        })
+
     return (
         <>
             <div className="inner">
@@ -43,25 +57,15 @@ function MovieBus() {
                                 },
                             }}
                         >
-                            <SwiperSlide className="swiper-slide"><img onMouseOver={mouseOver} onMouseOut={mouseOut} src="./img/visual02.png"/><p>영화이름1</p></SwiperSlide>
-                            <SwiperSlide className="swiper-slide"><img src="./img/visual03.jpg"/><p>영화이름2</p></SwiperSlide>
-                            <SwiperSlide className="swiper-slide"><img src="./img/visual04.jpg"/><p>영화이름3</p></SwiperSlide>
-                            <SwiperSlide className="swiper-slide"><img src="./img/visual05.jpg"/><p>영화이름4</p></SwiperSlide>
-                            <SwiperSlide className="swiper-slide"><img src="./img/visual06.jpg"/><p>영화이름5</p></SwiperSlide>
-                            <SwiperSlide className="swiper-slide"><img src="./img/visual07.jpg"/><p>영화이름6</p></SwiperSlide>
-                            <SwiperSlide className="swiper-slide"><img src="./img/visual08.jpg"/><p>영화이름7</p></SwiperSlide>
-                            <SwiperSlide className="swiper-slide"><img src="./img/visual09.jpg"/><p>영화이름8</p></SwiperSlide>
-                            <SwiperSlide className="swiper-slide"><img src="./img/visual10.jpg"/><p>영화이름9</p></SwiperSlide>
+                            {
+                                movies.map((movie) =>
+                                    movie.posters.toString().length > 0?
+                                    <SwiperSlide key={movie.docid}><img onMouseOver={mouseOver} onMouseOut={mouseOut}
+                                                      src={movie.posters.split('|')[0]}/><p>영화이름1</p></SwiperSlide>
+                                        : ""
+                                )
+                            }
                         </Swiper>
-                        {/*<div className="swiper-slide"><img onMouseOver={mouseOver} onMouseOut={mouseOut} src="./img/visual02.png"/><p>영화이름1</p></div>*/}
-                        {/*<div className="swiper-slide"><img src="./img/visual03.jpg"/><p>영화이름2</p></div>*/}
-                        {/*<div className="swiper-slide"><img src="./img/visual04.jpg"/><p>영화이름3</p></div>*/}
-                        {/*<div className="swiper-slide"><img src="./img/visual05.jpg"/><p>영화이름4</p></div>*/}
-                        {/*<div className="swiper-slide"><img src="./img/visual06.jpg"/><p>영화이름5</p></div>*/}
-                        {/*<div className="swiper-slide"><img src="./img/visual07.jpg"/><p>영화이름6</p></div>*/}
-                        {/*<div className="swiper-slide"><img src="./img/visual08.jpg"/><p>영화이름7</p></div>*/}
-                        {/*<div className="swiper-slide"><img src="./img/visual09.jpg"/><p>영화이름8</p></div>*/}
-                        {/*<div className="swiper-slide"><img src="./img/visual10.jpg"/><p>영화이름9</p></div>*/}
                     </div>
                     <div className="swiper-button-next"></div>
                     <div className="swiper-button-prev"></div>
