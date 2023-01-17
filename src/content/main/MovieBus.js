@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import { Swiper, SwiperSlide } from "swiper/react"; // basic
-import SwiperCore, { Navigation, Pagination } from "swiper";
+import {Swiper, SwiperSlide} from "swiper/react"; // basic
+import SwiperCore, {Navigation, Pagination} from "swiper";
 import "swiper/css"; //basic
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -48,104 +48,112 @@ function MovieBus() {
 
     const getMovies = async (searchType, keywords) => {
         //시작할 때 로딩중인 상태를 만들어줍니다.
-        dispatch({ type: 'LOADING' });
+        dispatch({type: 'LOADING'});
         try {
             const result = await axios.get(
-                "http://localhost:8080/movieHam/api/movie/search/" + "repRlsDate" + "?keywords=" + "2023"
+                "http://localhost:8080/movieHam/api/movie/search/" + searchType + "?keywords=" + keywords
             );
-            dispatch({ type: 'SUCCESS', data: result.data.resultList });
+            dispatch({type: 'SUCCESS', data: result.data.resultList});
         } catch (e) {
-            dispatch({ type: 'ERROR', error: e });
+            dispatch({type: 'ERROR', error: e});
         }
     };
 
     useEffect(() => {
-        getMovies("test","test");
+        getMovies("repRlsDate", "2023");
     }, []);
 
-    const { loading, data: movies, error } = state;
+    const {loading, data: movies, error} = state;
 
-    const searchMovies = (e) => {
-        getMovies("title",e.target.value);
+    const searchMovies = () => {
+        getMovies("title", $("#keywords").val());
     }
 
-    if(movies != null) {
-        return (
-            <>
-                <section className="visual">
-                    <div className="vis-img">
-                        <img src="./img/visual09.jpg"/>
-                    </div>
-                    <div className="layer"></div>
-                    <div className="layer-toB"></div>
-
-                    <div className="inner">
-                        <div className="incon-box">
-
-
-                            <div className="search">
-                                <input type="text" name="keywords" id="keywords" placeholder="검색어를 입력하세요." onKeyDown={(e)=>{if(e.key == "Enter")searchMovies(e) }} />
-                                <img src="./img/searchIcon.png" id="test" onClick={() => {$("#keywords").dispatchEvent(new KeyboardEvent("keydown"), {key:"Enter"})}} />
-                            </div>
-
-
-                            <div className="vis-intro">
-                                <p>나만의 영화박스</p>
-                                <p>
-                                    영화 속에서 찾는 감동과 재미 <br/>
-                                    당장 볼 수 없어 잊은 영화들 이곳에 모아두세요 <br/>
-                                    지금 바로 무비함에서 나만의 위시리스트를 만들어보세요!
-                                </p>
-                            </div>
-
-
-                            <div className="vis-down">
-                                <a href="#none">
-                                    어플 다운로드
-                                </a>
-                            </div>
-
-                        </div>
-                    </div>
-                </section>
-                <section className="movie-bus">
-                    <div className="inner">
-                        <div className="swiper mySwiper">
-                            <div className="swiper-wrapper">
-                                <Swiper
-                                    spaceBetween={20}
-                                    slidesPerView={3}
-                                    scrollbar={{draggable: true}}
-                                    navigation={{
-                                        nextEl: '.swiper-button-next',
-                                        prevEl: '.swiper-button-prev',
-                                    }}
-                                    pagination
-
-                                    breakpoints={{
-                                        768: {
-                                            slidesPerView: 5,
-                                        },
-                                    }}
-                                >
-                                    {
-                                        movies.map((movie) =>
-                                            movie.posters.toString().length > 0 ?
-                                                <SwiperSlide key={movie.docid}><img src={movie.posters.split('|')[0]}/></SwiperSlide>
-                                                : ""
-                                        )
-                                    }
-                                </Swiper>
-                            </div>
-                            <div className="swiper-button-next"></div>
-                            <div className="swiper-button-prev"></div>
-                            <div className="swiper-pagination"></div>
-                        </div>
-                    </div>
-                </section>
-            </>
-        );
+    const changeStillImage = (e) => {
+        $("#stillImage").prop("src", $(e.target).data("still"));
     }
+
+    return (
+        <>
+            <section className="visual">
+                <div className="vis-img">
+                    <img src="./img/visual09.jpg" id="stillImage"/>
+                </div>
+                <div className="layer"></div>
+                <div className="layer-toB"></div>
+
+                <div className="inner">
+                    <div className="incon-box">
+
+
+                        <div className="search">
+                            <input type="text" name="keywords" id="keywords" placeholder="검색어를 입력하세요."
+                                   onKeyDown={(e) => {
+                                       if (e.key == "Enter") searchMovies(e)
+                                   }}/>
+                            <img src="./img/searchIcon.png" id="searchIcon" onClick={() => {
+                                searchMovies()
+                            }}/>
+                        </div>
+
+
+                        <div className="vis-intro">
+                            <p>나만의 영화박스</p>
+                            <p>
+                                영화 속에서 찾는 감동과 재미 <br/>
+                                당장 볼 수 없어 잊은 영화들 이곳에 모아두세요 <br/>
+                                지금 바로 무비함에서 나만의 위시리스트를 만들어보세요!
+                            </p>
+                        </div>
+
+
+                        <div className="vis-down">
+                            <a href="#none">
+                                어플 다운로드
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+            <section className="movie-bus">
+                <div className="inner">
+                    <div className="swiper mySwiper">
+                        <div className="swiper-wrapper">
+                            <Swiper
+                                spaceBetween={20}
+                                slidesPerView={3}
+                                scrollbar={{draggable: true}}
+                                navigation={{
+                                    nextEl: '.swiper-button-next',
+                                    prevEl: '.swiper-button-prev',
+                                }}
+                                pagination
+
+                                breakpoints={{
+                                    768: {
+                                        slidesPerView: 5,
+                                    },
+                                }}
+                            >
+                                {
+                                    movies != null ? movies.map((movie) =>
+                                        movie.posters.toString().length > 0 ?
+                                            <SwiperSlide key={movie.docid}><img
+                                                src={movie.posters.split('|')[0]} data-still={movie.stlls.length > 0 ? movie.stlls.split('|')[0] : movie.posters.split('|')[0]} onClick={changeStillImage}/></SwiperSlide>
+                                            : ""
+                                    ) : <span>loding</span>
+                                }
+                            </Swiper>
+                        </div>
+                        <div className="swiper-button-next"></div>
+                        <div className="swiper-button-prev"></div>
+                        <div className="swiper-pagination"></div>
+                    </div>
+                </div>
+            </section>
+        </>
+    );
 }
 
 export default MovieBus;
