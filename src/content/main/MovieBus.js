@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import {Swiper, SwiperSlide, useSwiper} from "swiper/react"; // basic
-import SwiperCore, {Navigation, Pagination} from "swiper";
 import "swiper/css"; //basic
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -62,12 +61,12 @@ function MovieBus() {
 
     const swiper = useSwiper();
 
-    const getMovies = async (searchType, keywords) => {
+    const getMovies = async (searchType, pageIndex, countPerPage, keywords) => {
         //시작할 때 로딩중인 상태를 만들어줍니다.
         dispatch({type: 'LOADING'});
         try {
             const result = await axios.get(
-                "http://localhost:8080/movieHam/api/movie/search/" + searchType + "?keywords=" + keywords
+                "http://localhost:8080/movieHam/api/movie/search/" + searchType + "?pageIndex=" + pageIndex + "&countPerPage=" + countPerPage + "&keywords=" + keywords
             );
             dispatch({type: 'SUCCESS', data: result.data.resultList});
         } catch (e) {
@@ -76,17 +75,17 @@ function MovieBus() {
     };
 
     useEffect(() => {
-        getMovies("repRlsDate", "2023");
+        getMovies("recent",0, 30, "recent");
     }, []);
 
     const {loading, data: movies, error} = state;
 
     const searchMovies = () => {
-        getMovies("title", $("#keywords").val());
+        getMovies("title", 0, 30, $("#keywords").val());
     }
 
     const changeStillImage = (e) => {
-        $("#stillImage").prop("src", $(e.target).data("still"));
+        $("#stillImage").prop("src", $(e.target).data("backdrop"));
     }
 
     return (
@@ -158,9 +157,9 @@ function MovieBus() {
                             >
                                 {
                                     movies != null ? movies.map((movie) =>
-                                        movie.posters.toString().length > 0 ?
-                                            <SwiperSlide key={movie.docid} onMouseOver={onMouseEnter} onMouseOut={onMouseOut}>
-                                                    <img src={movie.posters.split('|')[0]} data-still={movie.stlls.length > 0 ? movie.stlls.split('|')[0] : movie.posters.split('|')[0]} onClick={changeStillImage}/>
+                                        movie.posterPath.toString().length > 0 ?
+                                            <SwiperSlide key={movie.movieId} onMouseOver={onMouseEnter} onMouseOut={onMouseOut}>
+                                                    <img src={movie.posterPath} data-backdrop={movie.backdropPath} onClick={changeStillImage}/>
                                                     <p>{movie.title}</p>
                                             </SwiperSlide>
                                             : ""
