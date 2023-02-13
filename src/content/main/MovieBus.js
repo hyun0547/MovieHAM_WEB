@@ -123,7 +123,7 @@ function MovieBus() {
 
 
                         <div className="vis-down">
-                            <a href="#none">
+                            <a href="#none" onClick={()=>{alert('준비중입니다.')}}>
                                 어플 다운로드
                             </a>
                         </div>
