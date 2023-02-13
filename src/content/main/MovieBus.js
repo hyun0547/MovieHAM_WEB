@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import {Swiper, SwiperSlide} from "swiper/react"; // basic
+import {Swiper, SwiperSlide, useSwiper} from "swiper/react"; // basic
 import SwiperCore, {Navigation, Pagination} from "swiper";
 import "swiper/css"; //basic
 import "swiper/css/navigation";
@@ -8,6 +8,10 @@ import "./css/style.css"
 import "./css/reset.css"
 import axios from "axios";
 import React, {useEffect, useReducer} from "react";
+import SwiperButtonPrev from "./module/swiper/SwiperButtonPrev";
+import SwiperButtonNext from "./module/swiper/SwiperButtonNext";
+import LoadingSpinner from "./module/loading/LoadingSpinner";
+
 
 function reducer(state, action) {
     switch (action.type) {
@@ -38,6 +42,16 @@ function reducer(state, action) {
     }
 }
 
+function onMouseEnter(e){
+    $(e.target).addClass("target");
+    $(e.target).siblings("p").show();
+}
+
+function onMouseOut(e){
+    $(e.target).removeClass("target");
+    $(e.target).siblings("p").hide();
+}
+
 function MovieBus() {
 
     const [state, dispatch] = useReducer(reducer, {
@@ -45,6 +59,8 @@ function MovieBus() {
         data: null,
         error: null
     });
+
+    const swiper = useSwiper();
 
     const getMovies = async (searchType, keywords) => {
         //시작할 때 로딩중인 상태를 만들어줍니다.
@@ -129,26 +145,32 @@ function MovieBus() {
                                     prevEl: '.swiper-button-prev',
                                 }}
                                 pagination
-
+                                centeredSlides={false}
+                                centerInsufficientSlides={true}
                                 breakpoints={{
-                                    768: {
-                                        slidesPerView: 5,
+                                    768:{
+                                        slidesPerView:4
                                     },
+                                    1024:{
+                                        slidesPerView:7
+                                    }
                                 }}
                             >
                                 {
                                     movies != null ? movies.map((movie) =>
                                         movie.posters.toString().length > 0 ?
-                                            <SwiperSlide key={movie.docid}><img
-                                                src={movie.posters.split('|')[0]} data-still={movie.stlls.length > 0 ? movie.stlls.split('|')[0] : movie.posters.split('|')[0]} onClick={changeStillImage}/></SwiperSlide>
+                                            <SwiperSlide key={movie.docid} onMouseOver={onMouseEnter} onMouseOut={onMouseOut}>
+                                                    <img src={movie.posters.split('|')[0]} data-still={movie.stlls.length > 0 ? movie.stlls.split('|')[0] : movie.posters.split('|')[0]} onClick={changeStillImage}/>
+                                                    <p>{movie.title}</p>
+                                            </SwiperSlide>
                                             : ""
-                                    ) : <span>loding</span>
+                                    ) : <LoadingSpinner/>
                                 }
+                                <SwiperButtonNext></SwiperButtonNext>
+                                <SwiperButtonPrev></SwiperButtonPrev>
+                                <div className="swiper-pagination"></div>
                             </Swiper>
                         </div>
-                        <div className="swiper-button-next"></div>
-                        <div className="swiper-button-prev"></div>
-                        <div className="swiper-pagination"></div>
                     </div>
                 </div>
             </section>

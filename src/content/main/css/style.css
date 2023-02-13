@@ -57,9 +57,12 @@ body {
 .swiper-slide p {
     position: absolute;
     color: #fff;
-    font-size: 24px;
+    font-size: 22px;
     z-index: 9999999;
+    padding: 0 15px;
     display: none;
+    pointer-events: none;
+    word-break: keep-all;
 }
 
 .swiper-pagination-bullet-active {--swiper-theme-color: #b31217;}
@@ -193,16 +196,11 @@ body {
 }
 
 /* movie */
-.movie-bus {
-    height: 35vh;
-}
-
 .movie-bus .inner {
     height: 100%;
 }
 
 .target {
-    position: absolute;
     z-index: 99999;
     opacity: 0.4;
 }
