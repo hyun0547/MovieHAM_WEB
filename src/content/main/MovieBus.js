@@ -53,6 +53,8 @@ function onMouseOut(e){
 
 function MovieBus() {
 
+    const [backdropImg, setBackdropImg] = React.useState("");
+
     const [state, dispatch] = useReducer(reducer, {
         loading: false,
         data: null,
@@ -69,6 +71,7 @@ function MovieBus() {
                 "http://localhost:8080/movieHam/api/movie/search/" + searchType + "?pageIndex=" + pageIndex + "&countPerPage=" + countPerPage + "&keywords=" + keywords
             );
             dispatch({type: 'SUCCESS', data: result.data.resultList});
+            setBackdropImg(result.data.resultList[0].backdropPath);
         } catch (e) {
             dispatch({type: 'ERROR', error: e});
         }
@@ -85,14 +88,14 @@ function MovieBus() {
     }
 
     const changeStillImage = (e) => {
-        $("#stillImage").prop("src", $(e.target).data("backdrop"));
+        $("#backdropImg").prop("src", $(e.target).data("backdrop"));
     }
 
     return (
         <>
             <section className="visual">
                 <div className="vis-img">
-                    <img src="./img/visual09.jpg" id="stillImage"/>
+                    <img src={backdropImg} id="backdropImg"/>
                 </div>
                 <div className="layer"></div>
                 <div className="layer-toB"></div>
