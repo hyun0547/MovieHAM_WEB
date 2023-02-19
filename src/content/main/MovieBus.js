@@ -68,7 +68,7 @@ function MovieBus() {
         dispatch({type: 'LOADING'});
         try {
             const result = await axios.get(
-                "http://localhost:8080/movieHam/api/movie/search/" + searchType + "?pageIndex=" + pageIndex + "&countPerPage=" + countPerPage + "&keywords=" + keywords
+                "http://ec2-43-201-19-58.ap-northeast-2.compute.amazonaws.com:8080/movieHam/api/movie/search/" + searchType + "?pageIndex=" + pageIndex + "&countPerPage=" + countPerPage + "&keywords=" + keywords
             );
             dispatch({type: 'SUCCESS', data: result.data.resultList});
             setBackdropImg(result.data.resultList[0].backdropPath);
