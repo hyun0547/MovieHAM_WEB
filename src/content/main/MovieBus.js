@@ -61,12 +61,12 @@ function MovieBus() {
 
     const swiper = useSwiper();
 
-    const getMovies = async (searchType, pageIndex, countPerPage, keywords) => {
+    const getPopularMovies = async (pageIndex, countPerPage) => {
         //시작할 때 로딩중인 상태를 만들어줍니다.
         dispatch({type: 'LOADING'});
         try {
             const result = await axios.get(
-                "http://localhost:8080/movieHam/api/movie/search/" + searchType + "?pageIndex=" + pageIndex + "&countPerPage=" + countPerPage + "&keywords=" + keywords
+                `https://movieapi.ssony.me/movie/list/all/popularity?orderType=desc&pageIndex=${pageIndex}&countPerPage=${countPerPage}`
             );
             dispatch({type: 'SUCCESS', data: result.data.resultList});
         } catch (e) {
@@ -74,14 +74,26 @@ function MovieBus() {
         }
     };
 
+    const getSearchMovies = async (pageIndex, countPerPage, keyword) => {
+        dispatch({type: 'LOADING'});
+        try{
+            const result = await axios.get(
+                `https://movieapi.ssony.me/movie/list/title/releaseDate?groupKeyword=${keyword}&orderType=desc&pageIndex=${pageIndex}&countPerPage=${countPerPage}`
+            );
+            dispatch({type: 'SUCCESS', data: result.data.resultList});
+        } catch (e) {
+            dispatch({type: 'ERROR', error: e});
+        }
+    }
+
     useEffect(() => {
-        getMovies("recent",0, 30, "recent");
+        getPopularMovies(0, 30);
     }, []);
 
     const {loading, data: movies, error} = state;
 
     const searchMovies = () => {
-        getMovies("title", 0, 30, $("#keywords").val());
+        getSearchMovies(0, 30, $("#keywords").val());
     }
 
     const changeStillImage = (e) => {
