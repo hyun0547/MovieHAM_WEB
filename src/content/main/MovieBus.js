@@ -71,8 +71,8 @@ function MovieBus() {
                 `https://movieapi.ssony.me/movie/list/all/popularity`
                 ,{"pageIndex": pageIndex, "countPerPage": countPerPage}
             );
-            dispatch({type: 'SUCCESS', data: result.data.resultList});
-            setBackdropImg(result.data.resultList[0].backdropPath);
+            dispatch({type: 'SUCCESS', data: result.data.result});
+            setBackdropImg(result.data.result[0].backdropPath);
         } catch (e) {
             dispatch({type: 'ERROR', error: e});
         }
@@ -89,7 +89,7 @@ function MovieBus() {
                     , "countPerPage":countPerPage
                 }
             );
-            dispatch({type: 'SUCCESS', data: result.data.resultList});
+            dispatch({type: 'SUCCESS', data: result.data.result});
         } catch (e) {
             dispatch({type: 'ERROR', error: e});
         }
