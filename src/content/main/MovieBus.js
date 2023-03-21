@@ -67,8 +67,9 @@ function MovieBus() {
         //시작할 때 로딩중인 상태를 만들어줍니다.
         dispatch({type: 'LOADING'});
         try {
-            const result = await axios.get(
-                `https://movieapi.ssony.me/movie/list/all/popularity?orderType=desc&pageIndex=${pageIndex}&countPerPage=${countPerPage}`
+            const result = await axios.post(
+                `https://movieapi.ssony.me/movie/list/all/popularity`
+                ,{"pageIndex": pageIndex, "countPerPage": countPerPage}
             );
             dispatch({type: 'SUCCESS', data: result.data.resultList});
             setBackdropImg(result.data.resultList[0].backdropPath);
@@ -80,8 +81,13 @@ function MovieBus() {
     const getSearchMovies = async (pageIndex, countPerPage, keyword) => {
         dispatch({type: 'LOADING'});
         try{
-            const result = await axios.get(
-                `https://movieapi.ssony.me/movie/list/title/releaseDate?groupKeyword=${keyword}&orderType=desc&pageIndex=${pageIndex}&countPerPage=${countPerPage}`
+            const result = await axios.post(
+                `https://movieapi.ssony.me/movie/list/title/releaseDate`
+                , {
+                    "groupKeyword":keyword
+                    , "pageIndex":pageIndex
+                    , "countPerPage":countPerPage
+                }
             );
             dispatch({type: 'SUCCESS', data: result.data.resultList});
         } catch (e) {
