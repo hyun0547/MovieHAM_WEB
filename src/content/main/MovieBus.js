@@ -70,7 +70,7 @@ function MovieBus() {
             const result = await axios.post(
                 `https://movieapi.ssony.me/movie/list/all/popularity`
                 ,{"pageIndex": pageIndex, "countPerPage": countPerPage}
-                , {headers : {'Content-Type': 'application/x-www-form-urlencoded'}}
+                , {headers : {'Content-Type': 'application/json'}}
             );
             dispatch({type: 'SUCCESS', data: result.data.result});
             setBackdropImg(result.data.result[0].backdropPath);
@@ -89,7 +89,7 @@ function MovieBus() {
                     , "pageIndex":pageIndex
                     , "countPerPage":countPerPage
                 }
-                , {headers : {'Content-Type': 'application/x-www-form-urlencoded'}}
+                , {headers : {'Content-Type': 'application/json'}}
             );
             dispatch({type: 'SUCCESS', data: result.data.result});
         } catch (e) {
