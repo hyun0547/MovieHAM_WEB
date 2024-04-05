@@ -51,6 +51,10 @@ function onMouseOut(e){
     $(e.target).siblings("p").hide();
 }
 
+function setImageUrl(path){
+    return "https://image.tmdb.org/t/p/original"+path;
+}
+
 function MovieBus() {
 
     const [backdropImg, setBackdropImg] = React.useState("");
@@ -63,39 +67,51 @@ function MovieBus() {
 
     const swiper = useSwiper();
 
+
     const getPopularMovies = async (pageIndex, countPerPage) => {
         //시작할 때 로딩중인 상태를 만들어줍니다.
         dispatch({type: 'LOADING'});
         try {
-            const result = await axios.post(
-                `https://movieapi.ssony.me/movie/list/all/popularity`
-                ,{"pageIndex": pageIndex, "countPerPage": countPerPage}
-                , {headers : {'Content-Type': 'application/json'}}
+            const result = await axios.get(`3/discover/movie`,
+            {
+                params: {
+                    "language":"ko-KR",
+                    "api_key":"de0b88f9a20412d77f2029f0ce308f89",
+                    "primary_release_date.gte": "2024-01-16",
+                    "primary_release_date.lte": "2024-03-16",
+                    "sort_by": "popularity.desc",
+                }
+            }
             );
-            dispatch({type: 'SUCCESS', data: result.data.result});
-            setBackdropImg(result.data.result[0].backdropPath);
+            dispatch({type: 'SUCCESS', data: result.data.results});
+            setBackdropImg(setImageUrl(result.data.results[0].backdrop_path));
         } catch (e) {
             dispatch({type: 'ERROR', error: e});
         }
     };
 
-    const getSearchMovies = async (pageIndex, countPerPage, keyword) => {
+
+    const getSearchMovies = async (keyword) => {
         dispatch({type: 'LOADING'});
         try{
-            const result = await axios.post(
-                `https://movieapi.ssony.me/movie/list/title/releaseDate`
-                , {
-                    "groupKeyword":keyword
-                    , "pageIndex":pageIndex
-                    , "countPerPage":countPerPage
+            const result = await axios.get(
+                `3/search/movie`,
+                {
+                    params: {
+                        "language":"ko-KR",
+                        "api_key":"de0b88f9a20412d77f2029f0ce308f89",
+                        "query": keyword,
+                        "include_adult" : false
+                    }
                 }
-                , {headers : {'Content-Type': 'application/json'}}
             );
-            dispatch({type: 'SUCCESS', data: result.data.result});
+
+            dispatch({type: 'SUCCESS', data: result.data.results});
         } catch (e) {
             dispatch({type: 'ERROR', error: e});
         }
     }
+    
 
     useEffect(() => {
         getPopularMovies(0, 30);
@@ -104,11 +120,21 @@ function MovieBus() {
     const {loading, data: movies, error} = state;
 
     const searchMovies = () => {
-        getSearchMovies(0, 30, $("#keywords").val());
+        getSearchMovies($("#keywords").val());
     }
 
     const changeStillImage = (e) => {
-        $("#backdropImg").prop("src", $(e.target).data("backdrop"));
+        $("#backdropImg").css({'opacity':0})
+
+        setTimeout(() => {
+            $("#backdropImg").prop("src", $(e.target).data("backdrop"));
+        }, 280)
+        
+
+        setTimeout(() => {
+            $("#backdropImg").css({'opacity':1})
+        }, 600)
+
     }
 
     return (
@@ -180,9 +206,9 @@ function MovieBus() {
                             >
                                 {
                                     movies != null ? movies.map((movie) =>
-                                        movie.posterPath.toString().length > 0 ?
-                                            <SwiperSlide key={movie.movieId} onMouseOver={onMouseEnter} onMouseOut={onMouseOut}>
-                                                    <img src={movie.posterPath} data-backdrop={movie.backdropPath} onClick={changeStillImage}/>
+                                        movie.poster_path.toString().length > 0 ?
+                                            <SwiperSlide key={movie.id} onMouseOver={onMouseEnter} onMouseOut={onMouseOut}>
+                                                    <img src={setImageUrl(movie.poster_path)} data-backdrop={setImageUrl(movie.backdrop_path)} onClick={changeStillImage}/>
                                                     <p>{movie.title}</p>
                                             </SwiperSlide>
                                             : ""
