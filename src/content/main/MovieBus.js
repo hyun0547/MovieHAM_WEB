@@ -72,7 +72,7 @@ function MovieBus() {
         //시작할 때 로딩중인 상태를 만들어줍니다.
         dispatch({type: 'LOADING'});
         try {
-            const result = await axios.get(`3/discover/movie`,
+            const result = await axios.get(`https://api.themoviedb.org/3/discover/movie`,
             {
                 params: {
                     "language":"ko-KR",
@@ -95,7 +95,7 @@ function MovieBus() {
         dispatch({type: 'LOADING'});
         try{
             const result = await axios.get(
-                `3/search/movie`,
+                `https://api.themoviedb.org/3/search/movie`,
                 {
                     params: {
                         "language":"ko-KR",
